@@ -95,11 +95,11 @@ grant execute on function public.restaurant_is_company_member(uuid) to authentic
 
 create or replace function public.restaurant_create_account(
   p_company_name text,
-  p_restaurant_name text,
   p_restaurant_slug text,
   p_document_number text default null,
   p_billing_phone text default null,
-  p_plan_code text default 'starter'
+  p_plan_code text default 'starter',
+  p_restaurant_name text default null
 )
 returns jsonb language plpgsql security definer set search_path = public as $$
 declare
@@ -109,7 +109,7 @@ declare
   v_display_name text;
 begin
   if auth.uid() is null then raise exception 'Autenticação necessária'; end if;
-  if coalesce(trim(p_company_name),'')='' or coalesce(trim(p_restaurant_name),'')='' then raise exception 'Empresa e restaurante são obrigatórios'; end if;
+  if coalesce(trim(p_company_name),'')='' then raise exception 'Nome da empresa obrigatório'; end if;
   if p_restaurant_slug !~ '^[a-z0-9-]+$' then raise exception 'Slug inválido'; end if;
   select * into v_plan from public.restaurant_plans where code=p_plan_code and is_active;
   if not found then raise exception 'Plano indisponível'; end if;
@@ -121,7 +121,7 @@ begin
   insert into public.restaurant_company_members (company_id, user_id, display_name, role)
   values (v_company.id, auth.uid(), v_display_name, 'owner');
   insert into public.restaurant_restaurants (company_id, name, slug, phone)
-  values (v_company.id, trim(p_restaurant_name), p_restaurant_slug, nullif(trim(p_billing_phone),'')) returning * into v_restaurant;
+  values (v_company.id, coalesce(nullif(trim(p_restaurant_name), ''), trim(p_company_name)), p_restaurant_slug, nullif(trim(p_billing_phone),'')) returning * into v_restaurant;
   insert into public.restaurant_staff (restaurant_id, user_id, display_name, role)
   values (v_restaurant.id, auth.uid(), v_display_name, 'owner');
   insert into public.restaurant_licenses (company_id, restaurant_id, plan_id, status, monthly_price, trial_ends_at)
