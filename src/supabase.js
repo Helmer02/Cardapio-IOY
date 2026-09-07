@@ -1,12 +1,16 @@
 const url = import.meta.env.VITE_SUPABASE_URL;
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const sessionKey = 'fast-burg-session';
+const pendingAccountKey = 'fast-burg-pending-account';
 export const configured = Boolean(url && key);
 function headers(token) { return { apikey: key, Authorization: `Bearer ${token || key}`, 'Content-Type': 'application/json' }; }
 async function request(path, options = {}, token) { if (!configured) throw new Error('Supabase ainda não foi configurado.'); const response = await fetch(`${url}${path}`, { ...options, headers: { ...headers(token), ...(options.headers || {}) } }); const body = await response.json().catch(() => null); if (!response.ok) throw new Error(body?.msg || body?.message || 'Não foi possível concluir a operação.'); return body; }
 export function getSession() { try { return JSON.parse(localStorage.getItem(sessionKey) || 'null'); } catch { return null; } }
 export function saveSession(session) { localStorage.setItem(sessionKey, JSON.stringify(session)); }
 export function signOut() { localStorage.removeItem(sessionKey); }
+export function getPendingAccount() { try { return JSON.parse(localStorage.getItem(pendingAccountKey) || 'null'); } catch { return null; } }
+export function savePendingAccount(account) { localStorage.setItem(pendingAccountKey, JSON.stringify(account)); }
+export function clearPendingAccount() { localStorage.removeItem(pendingAccountKey); }
 export async function signUpAccount({ name, email, password }) { const data = await request('/auth/v1/signup', { method: 'POST', body: JSON.stringify({ email, password, data: { full_name: name } }) }); if (data.session) saveSession(data.session); return data; }
 export async function signInAccount({ email, password }) { const data = await request('/auth/v1/token?grant_type=password', { method: 'POST', body: JSON.stringify({ email, password }) }); saveSession(data); return data; }
 export async function createRestaurantAccount(data) { const session = getSession(); return request('/rest/v1/rpc/restaurant_create_account', { method: 'POST', body: JSON.stringify(data) }, session?.access_token); }
