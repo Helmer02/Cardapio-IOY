@@ -1,4 +1,12 @@
-import './style.css';
+function registerAccount()
+function registerAccount() { return accessShell('FAST BURG PARA NEGÓCIOS', 'Crie a conta da sua empresa', 'Uma única conta reúne cardápio, pedidos, delivery, impressão e usuários. A primeira unidade operacional é criada automaticamente.', `<form id="registration-form"><label>Seu nome<input name="name" placeholder="Nome do responsável" required></label><label>E-mail de acesso<input name="email" type="email" placeholder="voce@empresa.com" required></label><label>Senha<input name="password" type="password" minlength="8" placeholder="Mínimo de 8 caracteres" required></label><label>Nome da empresa<input name="company" placeholder="Ex.: Grupo Bom Sabor" required></label><label>Link do seu cardápio<input name="slug" id="company-slug" placeholder="Ex.: lanches-da-re" required autocomplete="off"><small>Seu link ficará como <b>fastburg.app/lanches-da-re</b>. Espaços e letras maiúsculas são ajustados automaticamente.</small></label><label>WhatsApp comercial<input name="phone" inputmode="tel" placeholder="(00) 00000-0000"></label>${state.accountError?`<p class="form-error" role="alert">${state.accountError}</p>`:''}${state.accountNotice?`<p class="account-notice">${state.accountNotice}</p>`:''}<button class="primary" type="submit">Criar empresa e iniciar teste <span>→</span></button></form><small class="demo-note">14 dias de teste no plano Starter. Você poderá cadastrar novas unidades quando precisar.</small>`); }document.querySelector('#registration-form')?.addEventListener('submit', registerNewAccount);
+
+  document.querySelector('#company-slug')?.addEventListener('input', event => { event.currentTarget.value = slugify(event.currentTarget.value); });const account = { p_company_name:
+    const slug = slugify(form.get('slug'));
+    if (slug.length < 3) throw new Error('Escolha um link com pelo menos 3 letras ou números.');
+    const account = { p_company_name: form.get('company'), p_restaurant_name: form.get('company'), p_restaurant_slug: slug, p_billing_phone: form.get('phone') || null, p_plan_code: 'starter' };async function loginRestaurant(event)
+function slugify(value) { return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 48); }
+
 import './admin.css';
 import './orders.css';
 import './platform.css';
