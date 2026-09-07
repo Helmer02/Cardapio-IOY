@@ -93,7 +93,11 @@ $$;
 grant execute on function public.restaurant_platform_is_admin() to authenticated;
 grant execute on function public.restaurant_is_company_member(uuid) to authenticated;
 
-create or replace function public.restaurant_create_account(
+-- Recria a RPC para manter o script seguro mesmo se uma versão anterior
+-- (com os parâmetros de cadastro antigos) já tiver sido executada.
+drop function if exists public.restaurant_create_account(text, text, text, text, text, text);
+
+create function public.restaurant_create_account(
   p_company_name text,
   p_restaurant_slug text,
   p_document_number text default null,
