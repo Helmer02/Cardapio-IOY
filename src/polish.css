@@ -1,1 +1,50 @@
 :root{--ink:#29201d;--muted:#7d7069;--orange:#f15b23;--paper:#fffaf6;--line:#eadfd8}body{background:var(--paper)}button,input,select{transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffcfb9;outline-offset:2px}.primary{box-shadow:0 8px 16px #dd4d1926}.primary:hover{background:#d94c18;transform:translateY(-1px)}.product-card,.order-card,.admin-menu-grid article,.printer-card,.metrics article,.platform-metrics article,.company-list{box-shadow:0 5px 18px #2b120907}.access-single{background:radial-gradient(circle at 100% 0,#ffe7dc 0,transparent 36%),var(--paper)}.access-single .access-panel{background:#fff;border-radius:24px;box-shadow:0 16px 50px #38130a0b}.menu-page header{position:sticky;top:0;z-index:1;background:#fff8f2e8;backdrop-filter:blur(10px)}.hero{box-shadow:0 16px 30px #d845171f}.hero-art{filter:drop-shadow(0 12px 8px #7d2e1840)}.section-title h2,.admin-content h1,.platform-content h1{font-family:'DM Sans',sans-serif;font-weight:700}.admin-content,.platform-content{animation:page-enter .28s ease both}@keyframes page-enter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}.order-column{border:1px solid #e2d9d4}.order-column:nth-child(1)>header h2{color:#a86708}.order-column:nth-child(2)>header h2{color:#315fa8}.order-column:nth-child(3)>header h2{color:#307942}.success{border:1px solid #f0d8cc}.sales-card{position:relative;overflow:hidden}.sales-card:after{content:'FAST';position:absolute;right:-16px;bottom:-35px;color:#ffffff0d;font:5rem 'Paytone One';letter-spacing:-6px}.sales-features article{transition:transform .2s,box-shadow .2s}.sales-features article:hover{transform:translateY(-4px);box-shadow:0 12px 28px #3314070d}@media(max-width:700px){.access-single .access-panel{border-radius:0;box-shadow:none}.menu-page header{margin:0 -1rem;padding:0 1rem}.hero{border-radius:18px}}
+
+/* Cadastro: rótulos e campos ocupam uma linha inteira, também em desktop. */
+.access-single .access-panel{width:min(100% - 2rem,560px);max-width:560px;padding:3rem 2.5rem;margin:1.25rem auto 3rem;justify-content:flex-start}
+.access-single .access-panel form{width:100%;gap:1rem}
+.access-single .access-panel form label{display:grid;gap:.45rem;color:#322621}
+.access-single .access-panel input{width:100%;min-width:0;background:#fff}
+.access-single .access-panel label small{line-height:1.45}
+.access-single .access-panel .primary{width:100%;align-items:center}
+.access-single .access-panel .form-error,.access-single .access-panel .account-notice{width:100%}
+@media(max-width:700px){.access-single .access-panel{width:100%;margin:0;padding:2rem 1.35rem 3rem;border-radius:0}}
+
+/* Shared layout rhythm: customer menu, restaurant admin and platform admin. */
+:root{--page-max:1100px;--space-1:.5rem;--space-2:.75rem;--space-3:1rem;--space-4:1.5rem;--radius:16px}
+.menu-page,.admin-content,.platform-content{width:100%;}
+.admin-content>header,.platform-content>header{gap:var(--space-3);align-items:flex-start}
+.admin-content>header .live{margin-top:.25rem;white-space:nowrap}
+.primary{min-height:48px;align-items:center;gap:var(--space-2)}
+.primary:disabled{cursor:wait;opacity:.7;transform:none}
+.order-types button,.product-card,.admin-menu-grid article,.printer-card,.platform-metrics article,.company-list,.order-column{border-radius:var(--radius)}
+.cart-modal{display:flex;flex-direction:column;max-height:min(720px,calc(100dvh - 2rem));padding:clamp(1.25rem,4vw,1.75rem)}
+.cart-modal .cart-items{overflow:auto;margin:1rem 0;padding-right:.15rem}
+.cart-modal .total{margin:1rem 0;padding-top:1rem;border-top:1px solid var(--line)}
+.cart-modal .primary{justify-content:space-between;flex-shrink:0}
+.cart-item{min-width:0}.cart-item h3{font-size:1rem;line-height:1.25}.cart-item h3 small{white-space:nowrap}.cart-item>button{width:32px;height:32px;flex:0 0 32px;border-radius:50%;display:grid;place-items:center}
+.form-error{line-height:1.45;margin:.25rem 0 0}
+@media(max-width:700px){
+  .access-single>header,.menu-page header{height:70px;padding:0 1rem}
+  .menu-page{padding-bottom:6.75rem}
+  .hero{min-height:190px;align-items:flex-start}
+  .hero-art{align-self:flex-end;flex:0 0 auto}
+  .section-title{align-items:baseline;gap:var(--space-2)}
+  .section-title h2{font-size:1.35rem}
+  .product-info h3{line-height:1.2}.product-info p{margin:.45rem 0 .8rem}
+  .cart-bar{bottom:max(1rem,env(safe-area-inset-bottom));min-height:58px;border-radius:16px}
+  .overlay{padding:0;align-items:end}
+  .modal,.cart-modal,.admin-modal{width:100%;max-width:none;border-radius:24px 24px 0 0;max-height:calc(100dvh - .5rem)}
+  .cart-modal{padding:1.35rem 1.25rem max(1.35rem,env(safe-area-inset-bottom))}
+  .cart-modal h2{font-size:2rem;margin:.35rem 0 .5rem}
+  .cart-modal .cart-items{margin:.65rem 0}.cart-item{gap:.65rem;padding:.75rem 0}
+  .cart-icon{font-size:1.25rem;padding:.5rem}.cart-item p{font-size:.78rem}
+  .delivery-summary{margin-top:.1rem}.cart-modal .primary{margin-top:.85rem}
+  .admin-content>header,.platform-content>header{align-items:flex-start}.admin-content>header .live{font-size:.7rem}
+  .admin-menu-grid article{min-height:76px}.menu-admin-header{gap:.75rem}.menu-admin-header .primary{min-height:44px}
+}
+@media(max-width:400px){
+  .logo{font-size:1.3rem}.table-badge{padding:.45rem .6rem;max-width:118px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hero{padding:1.5rem 1.1rem}.hero-art{font-size:3.2rem}.grid{grid-template-columns:1fr}
+  .cart-bar{font-size:.84rem;padding:.9rem}.cart-modal .primary{font-size:.92rem}
+}

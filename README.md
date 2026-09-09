@@ -4,7 +4,8 @@ Plataforma de cardápio digital e operação para restaurantes: pedidos no salã
 
 ## Entradas
 
-- `/` - cardápio do cliente;
+- `/` - home comercial e acesso do proprietário;
+- `/?loja=slug-do-restaurante` - cardápio público de uma unidade; este é o link que o proprietário compartilha;
 - `/?modo=vendas` - landing comercial;
 - `/?modo=cadastro` - onboarding de uma conta que você liberar;
 - `/?modo=restaurante` - login do gestor da unidade;

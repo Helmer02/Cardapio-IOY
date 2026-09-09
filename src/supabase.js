@@ -14,6 +14,17 @@ export function clearPendingAccount() { localStorage.removeItem(pendingAccountKe
 export async function signUpAccount({ name, email, password }) { const data = await request('/auth/v1/signup', { method: 'POST', body: JSON.stringify({ email, password, data: { full_name: name } }) }); if (data.session) saveSession(data.session); return data; }
 export async function signInAccount({ email, password }) { const data = await request('/auth/v1/token?grant_type=password', { method: 'POST', body: JSON.stringify({ email, password }) }); saveSession(data); return data; }
 export async function createRestaurantAccount(data) { const session = getSession(); return request('/rest/v1/rpc/restaurant_create_account', { method: 'POST', body: JSON.stringify(data) }, session?.access_token); }
-export async function saveRestaurantOrder(order) { if (!configured || order.items.some(item => !item.product_id || typeof item.product_id !== 'string')) return { offline: true }; return request('/rest/v1/rpc/restaurant_submit_order', { method: 'POST', body: JSON.stringify(order) }); }
+export async function saveRestaurantOrder(order) {
+  // The public RPC receives `p_items`; older callers used `items`.  Accept both
+  // shapes here so a missing property can never prevent the checkout from
+  // reaching its intended demo fallback.
+  const items = Array.isArray(order?.p_items) ? order.p_items : Array.isArray(order?.items) ? order.items : [];
+  if (!configured || !items.length || items.some(item => !item?.product_id || typeof item.product_id !== 'string')) return { offline: true };
+  return request('/rest/v1/rpc/restaurant_submit_order', { method: 'POST', body: JSON.stringify({ ...order, p_items: items }) });
+}
+export async function fetchPublicRestaurantMenu(slug) {
+  if (!configured) return null;
+  return request('/rest/v1/rpc/restaurant_public_menu', { method: 'POST', body: JSON.stringify({ p_slug: slug }) });
+}
 export async function fetchPlatformCompanies() { const session = getSession(); if (!session?.access_token) return []; return request('/rest/v1/restaurant_companies?select=id,legal_name,trade_name,status,billing_email,created_at,restaurant_restaurants(name,slug),restaurant_licenses(status,monthly_price,restaurant_plans(name))&order=created_at.desc', {}, session.access_token); }
 export async function fetchMyRestaurants() { const session = getSession(); if (!session?.access_token) return []; return request('/rest/v1/restaurant_staff?select=restaurant_id,role,display_name,restaurant_restaurants(name,slug)&is_active=eq.true', {}, session.access_token); }
