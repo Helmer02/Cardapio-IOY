@@ -1,6 +1,6 @@
-# Banco independente do Fast Burg
+# Banco independente da IOY Sistemas
 
-Este módulo deve ser aplicado em um **novo projeto Supabase**, exclusivo para o Fast Burg. Não reutilize o projeto, URL, chaves ou tabelas de outro sistema.
+Este módulo deve ser aplicado em um **novo projeto Supabase**, exclusivo para a IOY Sistemas. Não reutilize o projeto, URL, chaves ou tabelas de outro sistema.
 
 Após criar o novo projeto, execute as migrações em ordem no **SQL Editor** dele:
 
@@ -39,7 +39,7 @@ Depois de criar seu usuário em **Authentication > Users**, marque-o como admini
 
 ```sql
 insert into public.restaurant_platform_admins (user_id, display_name)
-values ('UUID_DO_SEU_USUARIO'::uuid, 'Administrador Fast Burg')
+values ('UUID_DO_SEU_USUARIO'::uuid, 'Administrador IOY Sistemas')
 on conflict (user_id) do update set display_name = excluded.display_name;
 ```
 

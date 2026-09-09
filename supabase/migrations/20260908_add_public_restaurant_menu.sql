@@ -23,6 +23,7 @@ begin
     'name', p.name,
     'description', p.description,
     'price', p.price,
+    'image_url', p.image_url,
     'icon', coalesce(p.icon, '🍔'),
     'label', p.label,
     'category', coalesce(c.name, 'Cardápio'),

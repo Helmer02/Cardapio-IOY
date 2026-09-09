@@ -1,4 +1,4 @@
-# Fast Burg
+# IOY Sistemas
 
 Plataforma de cardápio digital e operação para restaurantes: pedidos no salão, delivery, painel da unidade e gestão multiempresa.
 
@@ -18,7 +18,7 @@ npm install
 npm run dev
 ```
 
-Copie `.env.example` para `.env.local` e informe somente a URL e a chave publishable do projeto Supabase exclusivo do Fast Burg.
+Copie `.env.example` para `.env.local` e informe somente a URL e a chave publishable do projeto Supabase exclusivo da IOY Sistemas.
 
 ## Banco de dados
 
