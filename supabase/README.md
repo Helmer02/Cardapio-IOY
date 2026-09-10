@@ -6,6 +6,13 @@ Após criar o novo projeto, execute as migrações em ordem no **SQL Editor** de
 
 1. `migrations/20260907_create_restaurant_system.sql`
 2. `migrations/20260908_add_platform_accounts.sql`
+3. `migrations/20260908_add_public_restaurant_menu.sql`
+4. `migrations/20260909_fix_public_menu_and_orders.sql`
+5. `migrations/20260910_persist_order_status.sql`
+6. `migrations/20260911_restaurant_marketing.sql`
+7. `migrations/20260912_product_promotions.sql`
+
+A migração de marketing é necessária para o checkout desta versão. Ela acrescenta cupons, clientes, consentimento, selos, recompensas e campanhas com permissões por restaurante. As campanhas abrem conversas individuais no WhatsApp; o envio é confirmado pelo operador.
 
 Ela cria as tabelas do sistema com prefixo `restaurant_`. O banco novo começa sem qualquer dependência do sistema anterior.
 

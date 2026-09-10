@@ -1,0 +1,72 @@
+const {PGlite}=require('@electric-sql/pglite');
+const fs=require('fs');
+const assert=require('node:assert/strict');
+(async()=>{
+  const db=new PGlite();
+  await db.exec(`create role anon; create role authenticated; create schema auth; create table auth.users(id uuid primary key); create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('test.user',true),'')::uuid$$; grant usage on schema public,auth to anon,authenticated;`);
+  for(const filename of ['20260907_create_restaurant_system.sql','20260909_fix_public_menu_and_orders.sql','20260910_persist_order_status.sql','20260911_restaurant_marketing.sql','20260912_product_promotions.sql']) {
+    await db.exec(fs.readFileSync('supabase/migrations/'+filename,'utf8').replace('create extension if not exists pgcrypto;',''));
+  }
+  const q=async(sql,args=[]) => (await db.query(sql,args)).rows;
+  const [{id:restaurant}]=await q("select id from restaurant_restaurants where slug='fast-burg'");
+  const [{id:product}]=await q("select id from restaurant_products where restaurant_id=$1 and name='Fast Classic'",[restaurant]);
+  const user='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+  await q('insert into auth.users values($1)',[user]);
+  await q("insert into restaurant_staff(restaurant_id,user_id,display_name,role) values($1,$2,'Teste','owner')",[restaurant,user]);
+  await q("select set_config('test.user',$1,false)",[user]);
+  await q("insert into restaurant_coupons(restaurant_id,code,kind,amount,usage_limit) values($1,'TEST10','percent',10,1)",[restaurant]);
+  async function order(code=null,phone='11999999999',optin=true) {
+    return (await q("select * from restaurant_marketing_submit_order('fast-burg','delivery',$1::jsonb,null,'Ana',$2,'{}'::jsonb,$3,$4)",[JSON.stringify([{product_id:product,quantity:1}]),phone,code,optin]))[0];
+  }
+  const [preview]=await q("select restaurant_marketing_quote('fast-burg',$1::jsonb,'11999999999','TEST10') as quote",[JSON.stringify([{product_id:product,quantity:1}])]);
+  assert.equal(preview.quote.total,25.11);
+  assert.equal((await q("select used_count from restaurant_coupons where code='TEST10'"))[0].used_count,0);
+  const first=await order('test10');
+  assert.equal(Number(first.total),25.11);assert.equal(Number(first.discount),2.79);
+  const count=Number((await q('select count(*) as n from restaurant_orders'))[0].n);
+  await assert.rejects(order('TEST10'),/esgotado/);
+  assert.equal(Number((await q('select count(*) as n from restaurant_orders'))[0].n),count);
+  await q("insert into restaurant_coupons(restaurant_id,code,kind,amount,expires_at) values($1,'EXPIRED','fixed',10,now()-interval '1 day')",[restaurant]);
+  await assert.rejects(order('EXPIRED'),/expirado/);
+  await q("insert into restaurant_coupons(restaurant_id,code,kind,amount,minimum_total) values($1,'MINIMO','fixed',10,100)",[restaurant]);
+  await assert.rejects(order('MINIMO'),/mínimo/);
+  await q("insert into restaurant_loyalty_settings values($1,true,2,10)",[restaurant]);
+  const second=await order();
+  async function deliver(id) {for(const [from,to] of [['new','preparing'],['preparing','ready'],['ready','delivered']]) await q('select restaurant_change_order_status($1,$2,$3,$4)',[restaurant,id,from,to]);}
+  await deliver(first.id); await deliver(second.id);
+  let customers=await q('select * from restaurant_marketing_customers');
+  assert.equal(customers[0].stamps,0);assert.equal(customers[0].delivered_orders,2);assert.equal(customers[0].opted_in,true);
+  const [reward]=await q('select * from restaurant_coupons where customer_phone is not null');
+  assert.ok(reward.code.startsWith('FID-'));
+  await assert.rejects(order(reward.code,'11888888888'),/outro cliente/);
+  const redeemed=await order(reward.code);
+  assert.equal(Number(redeemed.total),17.90);
+  await assert.rejects(order(reward.code),/esgotado/);
+  await q("update restaurant_orders set status='ready' where id=$1",[second.id]);
+  await q("update restaurant_orders set status='delivered' where id=$1",[second.id]);
+  assert.equal(Number((await q('select count(*) as n from restaurant_loyalty_events'))[0].n),2);
+  const [campaign]=await q("insert into restaurant_campaigns(restaurant_id,name,message) values($1,'Teste','Olá') returning *",[restaurant]);
+  await q('select restaurant_campaign_open($1,$2)',[campaign.id,'5511999999999']);
+  await q('update restaurant_marketing_customers set opted_in=false');
+  await assert.rejects(q('select restaurant_campaign_open($1,$2)',[campaign.id,'5511999999999']),/autorizou/);
+  await q('update restaurant_products set price=20,regular_price=27.90 where id=$1',[product]);
+  const promoted=await order();assert.equal(Number(promoted.total),20);
+  await q("insert into restaurant_coupons(restaurant_id,code,kind,amount) values($1,'PROMO10','percent',10)",[restaurant]);
+  assert.equal(Number((await order('PROMO10')).total),18);
+  const [publicMenu]=await q("select restaurant_public_menu('fast-burg') as menu");
+  assert.equal(publicMenu.menu.products.find(p=>p.id===product).regular_price,27.9);
+  await assert.rejects(q('update restaurant_products set regular_price=10 where id=$1',[product]),/promotion_valid/);
+  await q('update restaurant_products set price=27.90,regular_price=null where id=$1',[product]);
+  assert.equal(Number((await order()).total),27.90);
+  await db.exec('set role anon');
+  await assert.rejects(q('select * from restaurant_marketing_customers'),/permission denied/);
+  await db.exec('reset role; set role authenticated');
+  await assert.rejects(q('update restaurant_marketing_customers set stamps=100'),/permission denied/);
+  await assert.rejects(q('update restaurant_marketing_customers set opted_in=true'),/row-level security/);
+  await assert.rejects(q('update restaurant_coupons set used_count=0'),/permission denied/);
+  await q("select set_config('test.user','bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',false)");
+  assert.equal((await q('select * from restaurant_coupons')).length,0);
+  await assert.rejects(q('select restaurant_change_order_status($1,$2,$3,$4)',[restaurant,redeemed.id,'new','preparing']),/acesso/);
+  await db.close();
+  console.log('OK: desconto real, uso único, rollback, validade, mínimo, fidelidade, recompensa por telefone, idempotência, opt-out, RLS e isolamento.');
+})().catch(error=>{console.error(error);process.exitCode=1;});

@@ -1,0 +1,88 @@
+/* Product thumbnails must not inherit the source image's natural dimensions. */
+.admin-menu-grid article{min-width:0;align-items:center}
+.admin-menu-grid .mini-food{width:64px;height:64px;flex:0 0 64px;padding:0;display:grid;place-items:center;border-radius:12px;overflow:hidden}
+.admin-menu-grid .mini-food img{display:block;width:100%;height:100%;object-fit:cover}
+.admin-menu-grid article>div:nth-child(2){min-width:0;overflow-wrap:anywhere}
+.admin-menu-grid .route-dots{flex:0 0 auto}
+.food-image img,.modal-food img{display:block;max-width:100%;object-fit:cover}
+.access-panel,.admin-content,.platform-content,.admin aside,.platform aside,fieldset{min-width:0}
+input,select,textarea{max-width:100%;min-width:0}
+.order-card,.printer-card,.marketing-card,.company-list article>div,.hero>div:first-child{min-width:0;overflow-wrap:anywhere}
+.modal{max-height:calc(100dvh - 2rem);overflow-y:auto;overscroll-behavior:contain}
+body:has(.overlay){overflow:hidden}
+.modal .close{z-index:2;min-width:36px;min-height:36px}
+.public-start .logo,.menu-page header .logo{min-width:0;overflow-wrap:anywhere;line-height:1.2}
+.cart-bar{max-width:calc(100% - 2rem)}
+@media(min-width:701px) and (max-width:1100px){
+  .admin,.platform{grid-template-columns:190px minmax(0,1fr)}
+  .admin-content,.platform-content{padding:1.5rem}
+  .admin-menu-grid,.printer-grid{grid-template-columns:1fr}
+  .admin-content>header,.platform-content>header{flex-wrap:wrap}
+  .marketing-grid{grid-template-columns:1fr}
+  .hero{padding:2rem}.hero-art{font-size:5rem}
+}
+@media(max-width:700px){
+  :root{--page-gutter:1rem}
+  .welcome,.admin,.platform{grid-template-columns:minmax(0,1fr)}
+  .welcome .brand-panel{padding:2.5rem 1.5rem;min-height:240px}
+  .welcome .brand-mark{font-size:clamp(2.6rem,11vw,4rem);letter-spacing:-2px;line-height:.9}
+  .welcome .access-panel{width:100%;max-width:none;min-height:0;padding:2rem 1.5rem}
+  .brand-panel .floating{font-size:5rem;pointer-events:none}
+  .sales>header,.public-start header{gap:.75rem;flex-wrap:wrap;height:auto;min-height:76px}
+  .sales-login{max-width:150px;text-align:right}
+  .sales-hero{padding:2.5rem 1rem;gap:1.5rem}
+  .sales-hero h1{font-size:clamp(2.3rem,10vw,3.5rem)}
+  .sales-card div{flex-wrap:wrap;gap:.4rem}
+  .access-single>header{gap:.5rem;justify-content:space-between}
+  .access-single .access-panel{min-height:0}
+  .admin aside,.platform aside{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.5rem;padding:1rem}
+  .admin aside>.logo,.platform aside>.logo{grid-column:1;grid-row:1;align-self:center}
+  .admin aside .logout,.platform aside .logout{display:block;grid-column:2;grid-row:1;margin:0;min-height:44px;padding:.65rem;color:#fff}
+  .admin aside nav,.platform aside nav{grid-column:1/-1;grid-row:2;display:flex;max-width:100%;min-width:0;overflow-x:auto;margin:0;padding:.2rem 0;gap:.35rem;scrollbar-width:thin}
+  .admin aside nav button,.platform aside nav button{flex:0 0 auto;min-height:44px;white-space:nowrap}
+  .admin-content,.platform-content{padding:1.25rem 1rem;width:100%}
+  .admin-content>header,.platform-content>header{flex-wrap:wrap;gap:.5rem}
+  .admin-content h1,.platform-content h1{font-size:1.7rem;overflow-wrap:anywhere}
+  .share-card,.share-copy,.share-url{min-width:0;max-width:100%}
+  .share-actions{width:100%}.share-actions .primary{width:100%;justify-content:center}
+  .admin-menu-grid,.metrics,.platform-metrics,.printer-grid,.order-board{grid-template-columns:minmax(0,1fr)}
+  .admin-menu-grid .mini-food{width:56px;height:56px;flex-basis:56px}
+  .admin-menu-grid article{padding:.8rem;gap:.75rem;min-height:84px}
+  .admin-menu-grid article b{font-size:.95rem}.admin-menu-grid article small{line-height:1.5}
+  .menu-admin-header .primary{width:100%}
+  .order-column>div{grid-template-columns:minmax(0,1fr)}
+  .order-card-top,.card-actions{flex-wrap:wrap}.card-actions button{min-height:44px;flex:1 1 75px}
+  .order-filters button,.marketing-tabs button,.marketing-secondary{min-height:44px}
+  .order-detail>div{align-items:flex-start;flex-wrap:wrap}.order-detail p{overflow-wrap:anywhere;text-align:left}
+  .order-detail small{flex-shrink:0}
+  .printer-card{padding:1rem}.printer-card select{width:100%}
+  .bars{gap:.5rem;padding:0 .3rem}.bars small{font-size:.6rem}
+  .menu-page header{height:auto;min-height:70px;gap:.5rem;padding-top:.6rem;padding-bottom:.6rem;flex-wrap:wrap}
+  .menu-page header .logo{flex:1 1 130px;font-size:1.25rem;letter-spacing:-1px}
+  .table-badge{flex:0 0 auto;margin-left:auto;max-width:110px}
+  .cart-button{flex-shrink:0;min-width:44px;min-height:44px}
+  .hero{padding:1.5rem 1rem;gap:.5rem}.hero h1{font-size:clamp(2rem,8vw,3rem)}.hero p{font-size:.9rem;overflow-wrap:anywhere}
+  .hero-art{font-size:3rem;flex:0 0 auto}.hero-art span{right:-.3rem;font-size:.6rem}
+  .categories button{min-height:44px}.categories{gap:.5rem}
+  .product-info p{height:auto;min-height:44px}.product-info>div{gap:.3rem}
+  .round-add{width:44px;height:44px;flex:0 0 44px}
+  .cart-bar{left:1rem;right:1rem;transform:none;width:auto;bottom:max(.75rem,env(safe-area-inset-bottom));gap:.5rem;flex-wrap:wrap}
+  .overlay{padding:0;align-items:end}
+  .modal,.admin-modal,.cart-modal{max-height:calc(100dvh - .5rem);width:100%;max-width:none;padding:1.25rem 1rem max(1.25rem,env(safe-area-inset-bottom));border-radius:20px 20px 0 0}
+  .modal h2{padding-right:1.75rem;overflow-wrap:anywhere;font-size:1.8rem}
+  .modal .close{width:44px;height:44px;right:.6rem;top:.6rem}
+  .admin-modal fieldset{padding:.8rem}.admin-modal .form-pair{grid-template-columns:minmax(0,1fr)}
+  .admin-modal label,.admin-modal fieldset>div{min-width:0}
+  .admin-modal input[type=file]{font-size:.8rem;padding:.65rem .4rem}
+  .admin-modal .setting-row{gap:.65rem}.setting-row input,.availability input{flex:0 0 20px}
+  .product-save-footer{padding-bottom:max(.25rem,env(safe-area-inset-bottom))}
+  .modal-footer{gap:.6rem;flex-wrap:wrap}.modal-footer .primary{flex:1 1 160px}
+  .quantity button{width:44px;height:44px}.quantity{flex-shrink:0}
+  .cart-item>div:nth-child(2){min-width:0}.cart-item h3,.cart-item p{overflow-wrap:anywhere}
+  .cart-item>button{width:44px;height:44px;flex-basis:44px}
+  .cart-modal .cart-items{max-height:28dvh}.checkout-marketing{flex-shrink:0}
+  .marketing-pair{grid-template-columns:minmax(0,1fr)}
+  .marketing-card{padding:1rem}.marketing-row>div{min-width:0}
+  input:not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea{font-size:16px!important;min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
